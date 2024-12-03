@@ -6,6 +6,7 @@ class User(BaseModel):
     id: Optional[str] = None
     nome: str
     telefone: str
+    
 
     
 class Produto(BaseModel):

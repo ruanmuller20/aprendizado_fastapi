@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from src.schemas.schemas import Produto
+from src.schemas.schemas import Produto, User
 from src.infra.sqlalchemy.config.database import get_db, criar_bd
 from src.infra.sqlalchemy.repositorios.produto import RepositorioProduto
+from src.infra.sqlalchemy.repositorios.usuario import RepositorioUsuario
 
 criar_bd()
 
@@ -18,3 +19,14 @@ def criar_produto(produto: Produto, db: Session = Depends(get_db) ):
 def listar_produto(db: Session = Depends(get_db)):
     produtos = RepositorioProduto(db).listar()
     return produtos
+
+@app.post('/usuarios')
+def criar_usuario(usuario: User, db: Session = Depends(get_db)):
+    usuario_criado = RepositorioUsuario(db).criar(usuario)
+    return usuario_criado
+
+@app.get('/usuarios')
+def listar_usuario(db: Session = Depends(get_db)):
+    usuarios = RepositorioUsuario(db).listar()
+    return usuarios
+    
