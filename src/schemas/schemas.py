@@ -2,10 +2,14 @@ from fastapi import FastAPI
 from typing import Optional, List
 from pydantic import BaseModel
 
-class User(BaseModel):
+class Usuario(BaseModel):
     id: Optional[str] = None
     nome: str
     telefone: str
+    senha: str
+    
+    class Config:
+        from_attributes = True
     
 
     
@@ -17,7 +21,7 @@ class Produto(BaseModel):
     disponivel: bool = False
     
     class Config:
-        orm_mode = True
+        from_attributes = True
     
 class ProdutoSimples(BaseModel):
     id: Optional[str] = None
@@ -26,7 +30,7 @@ class ProdutoSimples(BaseModel):
    
     
     class Config:
-        orm_mode = True
+        from_attributes = True
     
     
 class Pedido(BaseModel):
@@ -35,6 +39,9 @@ class Pedido(BaseModel):
     entrega: bool = True
     endereco: str
     observacoes: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
     
 
 app = FastAPI()
