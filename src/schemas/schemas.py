@@ -3,10 +3,11 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 class Usuario(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None
     nome: str
     telefone: str
     senha: str
+    # produtos = List[Produto] = []
     
     class Config:
         from_attributes = True
@@ -14,11 +15,13 @@ class Usuario(BaseModel):
 
     
 class Produto(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None
     nome: str
     detalhes: str
     preco: float
     disponivel: bool = False
+    usuario_id: int
+    usuario: Optional[Usuario] = None
     
     class Config:
         from_attributes = True

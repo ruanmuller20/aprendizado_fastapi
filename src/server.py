@@ -16,7 +16,7 @@ def criar_produto(produto: Produto, db: Session = Depends(get_db) ):
     produto_criado = RepositorioProduto(db).criar(produto)
     return produto_criado
 
-@app.get('/produtos', response_model=List[ProdutoSimples])
+@app.get('/produtos', response_model=List[Produto])
 def listar_produto(db: Session = Depends(get_db)):
     produtos = RepositorioProduto(db).listar()
     return produtos
