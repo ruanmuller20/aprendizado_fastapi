@@ -1,10 +1,11 @@
+from sqlalchemy import update, delete
 from sqlalchemy.orm import Session, joinedload
 from src.schemas import schemas
 from src.infra.sqlalchemy.models import models
 
 class RepositorioProduto:
     def __init__(self, db: Session):
-        self.db = db
+        self.session = db
 
     def criar(self, produto: schemas.Produto):
         db_produto = models.Produto(
@@ -14,9 +15,9 @@ class RepositorioProduto:
             disponivel=produto.disponivel,
             usuario_id=produto.usuario_id
         )
-        self.db.add(db_produto)
-        self.db.commit()
-        self.db.refresh(db_produto)
+        self.session.add(db_produto)
+        self.session.commit()
+        self.session.refresh(db_produto)
         return schemas.ProdutoSimples(
             id=str(db_produto.id),  # Convertendo id para string
             nome=db_produto.nome,
@@ -24,7 +25,7 @@ class RepositorioProduto:
         )
 
     def listar(self):
-            produtos = self.db.query(models.Produto).options(joinedload(models.Produto.usuario)).all()
+            produtos = self.session.query(models.Produto).options(joinedload(models.Produto.usuario)).all()
             return [schemas.Produto(
                 id=str(produto.id),  # Convertendo id para string
                 nome=produto.nome,
@@ -39,3 +40,20 @@ class RepositorioProduto:
                     "senha": produto.usuario.senha or ""  # Garantindo que senha seja uma string válida
                 }) if produto.usuario else None
             ) for produto in produtos]
+            
+    def editar(self, produto: schemas.Produto):
+        update_stmt = update(models.Produto).where(models.Produto.id == produto.id).values(
+            nome=produto.nome,
+            detalhes=produto.detalhes,
+            preco=produto.preco,
+            disponivel=produto.disponivel,
+            usuario_id=produto.usuario_id
+        )
+        
+        self.session.execute(update_stmt)
+        self.session.commit()
+        
+    def remover(self, id: int):
+        delete_stmt = delete(models.Produto).where(models.Produto.id == id)
+        self.session.execute(delete_stmt)
+        self.session.commit()
